@@ -21,24 +21,31 @@ var userSchema = new Schema({
     zodiac: Number,
     country: String,
     city: String,
+    visitors: [ObjectId],
+    likedUsers: [ObjectId],
+    likedByUsers: [ObjectId],
     matches: [ObjectId],
     questionaries: [{
+        id: Number,
         question: String,
-        answers: [String]
+        answers: [{
+            id: Number,
+            content: String
+        }],
+        preferedAnswer: Number
     }],
     messages: [{
+        id: Number,
         sender: ObjectId,
         reciever: ObjectId,
-        message: String
+        content: String
     }],
     images: [{
+        id: Number,
         generatedName: String,
         originalName: String
     }],
-    profileImage: {
-        generatedName: String,
-        originalName: String
-    },
+    profileImage: Number,
     salt: {
         type: String,
         set: generateSalt
