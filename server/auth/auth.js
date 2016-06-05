@@ -30,7 +30,6 @@ exports.getFreshUser = () => {
         let [user] = exports.users.filter((user) => { return user.id === req.user.id });
         user = Object.assign(user, req.user);
         res.json(user);
-        next();
     }
 };
 
@@ -47,7 +46,7 @@ exports.verifyUser = () => {
         let {email, password} = req.body;
 
         if (email && password) {
-            let [user] = exports.users.filter((user) => { return user.email === email; });
+            // check if there`s such a user and return it
 
             if (user && user.password === password) {
                 req.user = {

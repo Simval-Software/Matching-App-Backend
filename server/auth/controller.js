@@ -18,8 +18,7 @@ module.exports = {
 				res.statusCode = 400;
 				next(new Error('Passwords do not match'));
 			} else {
-				let id = ~~(Math.random() * 10);
-				users.push({ id, email, password });
+				// Add the user to the database
 				req.user = { id: id };
 				next();
 			}
