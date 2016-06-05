@@ -8,6 +8,5 @@ let router = require('express').Router(),
 router.post('/login', controller.login);
 router.post('/register', controller.register);
 router.use(auth.assignToken());
-router.use(auth.getFreshUser());
 
 module.exports = router;

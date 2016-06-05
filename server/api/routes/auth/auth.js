@@ -2,42 +2,23 @@
 
 let jwt = require('jsonwebtoken'),
     expressJwt = require('express-jwt'),
-    config = require('../config/config'),
+    config = require('../../../config/config'),
     checkToken = expressJwt({ secret: config.secrets.jwt });
 
 exports.decodeToken = () => {
     return (req, res, next) => {
-        // make it optional to place token on query string
-        // if it is, place it on the headers where it should be
-        // so checkToken can see it. See follow the 'Bearer 034930493' format
-        // so checkToken can see it and decode it
         if (req.query && req.query.hasOwnProperty('access_token')) {
             req.headers.authorization = 'Bearer ' + req.query.access_token;
         }
 
-        // this will call next if token is valid
-        // and send error if its not. It will attached
-        // the decoded token to req.user
         checkToken(req, res, next);
     };
-};
-exports.users = [
-    { id: 1, email: 'abramgutan@abv.bg', password: '123' },
-    { id: 2, email: 'topJoy@abv.bg', password: 'asd' }
-]
-exports.getFreshUser = () => {
-    return (req, res, next) => {
-        let [user] = exports.users.filter((user) => { return user.id === req.user.id });
-        user = Object.assign(user, req.user);
-        res.json(user);
-    }
 };
 
 exports.assignToken = () => {
     return (req, res, next) => {
-        let id = req.user.id;
-        req.user.access_token = signToken(id);
-        next();
+        req.user.access_token = signToken(req.user._id);
+        res.json(req.user);
     }
 }
 
