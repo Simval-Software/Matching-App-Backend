@@ -1,8 +1,8 @@
 'use strict';
 
 let userRouter = require('express').Router(),
-    userCtrl = require('./user.controller');
+    userCtrl = require('./user.controllers');
 
-userRouter.get('/', userCtrl.getAllUsers);
+userRouter.get('/', userCtrl.auth.login);
 
 module.exports = userRouter;

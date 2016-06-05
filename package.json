@@ -2,7 +2,7 @@
   "name": "matching-app",
   "version": "0.0.1",
   "description": "matching application",
-  "main": "server.js",
+  "main": "index.js",
   "dependencies": {
     "mongodb": "^2.1.21",
     "mongoose": "^4.4.19",
