@@ -1,3 +1,5 @@
 module.exports = {
-    auth: require('./user.auth')
-}
+    getAllUsers(req, res) {
+        res.json([{name: 'valeri', age: 25}]);
+    }
+};
