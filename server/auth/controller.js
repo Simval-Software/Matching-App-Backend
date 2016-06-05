@@ -1,10 +1,28 @@
 'use strict';
 
-let signToken = require('./auth').signToken;
+let authMware = require('./auth');
 
-exports.login = function(req, res, next) {
-  // req.user will be there from the middleware
-  // verify user. Then we can just create a token
-  // and send it back for the client to consume
+var users = authMware.users;
 
-};
+module.exports = {
+	login(req, res, next) {
+		authMware.verifyUser()(req, res, next);
+	},
+	register(req, res, next) {
+		let {email, password, confirmPass} = req.body;
+
+		if (users.some((user) => { return user.email === email })) {
+			next(new Error('User with this email already exists'));
+		} else {
+			if (password !== confirmPass) {
+				res.statusCode = 400;
+				next(new Error('Passwords do not match'));
+			} else {
+				let id = ~~(Math.random() * 10);
+				users.push({ id, email, password });
+				req.user = { id: id };
+				next();
+			}
+		}
+	}
+}

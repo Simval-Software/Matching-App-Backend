@@ -1,14 +1,14 @@
 'use strict';
 
 let config = {
-  dev: 'development',
-  test: 'testing',
-  prod: 'production',
-  port: process.env.PORT || 3000,
-  expireTime: '1h',
-  secrets: {
-    jwt: 'dage'
-  }
+	dev: 'development',
+	test: 'testing',
+	prod: 'production',
+	port: process.env.PORT || 3000,
+	expireTime: 24 * 60 * 60 * 1,
+	secrets: {
+		jwt: 'dage'
+	}
 };
 
 process.env.NODE_ENV = process.env.NODE_ENV || config.dev;
@@ -19,12 +19,12 @@ let envConfig;
 // the file don't exist so lets try this statement
 // and fallback to an empty object if it does error out
 try {
-  envConfig = require('./' + config.env);
-  // just making sure the require actually
-  // got something back :)
-  envConfig = envConfig || {};
-} catch(e) {
-  envConfig = {};
+	envConfig = require('./' + config.env);
+	// just making sure the require actually
+	// got something back :)
+	envConfig = envConfig || {};
+} catch (e) {
+	envConfig = {};
 }
 
 // merge the two config files together
