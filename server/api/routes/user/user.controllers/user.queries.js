@@ -8,7 +8,7 @@ module.exports = {
             password
         });
 
-        return User.save()
+        return user.save()
             .then((user) => { return user })
             .catch((error) => {console.error(error)});
     },

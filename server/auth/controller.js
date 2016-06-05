@@ -1,6 +1,7 @@
 'use strict';
 
-let authMware = require('./auth');
+let authMware = require('./auth'),
+	userQueries = require('./../api/routes/user/user.controllers/').user;
 
 var users = authMware.users;
 
@@ -19,8 +20,12 @@ module.exports = {
 				next(new Error('Passwords do not match'));
 			} else {
 				// Add the user to the database
-				req.user = { id: id };
-				next();
+				userQueries.addUser({ email, password })
+					.then((user) => {
+						console.log(user._doc._id);
+						req.user = { id: user._doc._id };
+						next();
+					});
 			}
 		}
 	}
