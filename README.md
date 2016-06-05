@@ -9,6 +9,8 @@ var user = {
     country,
     city,
     matches,
+    likedUsers,
+    likedByUsers,
     questionaries,
     messages,
     dateOfBirth,
