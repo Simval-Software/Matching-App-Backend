@@ -4,7 +4,11 @@ let config = {
   dev: 'development',
   test: 'testing',
   prod: 'production',
-  port: process.env.PORT || 3000
+  port: process.env.PORT || 3000,
+  expireTime: 24 * 60 * 20,
+  secrets: {
+    jwt: 'dage'
+  }
 };
 
 process.env.NODE_ENV = process.env.NODE_ENV || config.dev;
