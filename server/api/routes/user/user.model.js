@@ -13,7 +13,7 @@ let userSchema = new Schema({
     },
     firstName: String,
     lastName: String,
-    passwordHash: {
+    password: {
         type: String,
         set: encodePassword
     },
