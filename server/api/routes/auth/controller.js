@@ -5,7 +5,8 @@ let authMware = require('./auth'),
 
 module.exports = {
 	login(req, res, next) {
-		let {email, password} = req.body;
+		let {email, password} = req.body,
+			invalidPasswordMsg = 'Invalid username or password';
 
         if (email && password) {
 			userQueries.verifyUser(email, password).then((user) => {
@@ -13,13 +14,11 @@ module.exports = {
 					req.user = user._doc;
 					next();
 				} else {
-					res.statusCode = 400;
-					next(new Error('Invalid username or password'))
+					next(new Error(invalidPasswordMsg));
 				}
 			});
         } else {
-            res.statusCode = 400;
-            next(new Error('Please provide email and password'));
+			next(new Error(invalidPasswordMsg));
         }
 	},
 	register(req, res, next) {
@@ -30,12 +29,10 @@ module.exports = {
 				req.user = user._doc;
 				next();
 			}).catch((err) => {
-				res.statusCode = 200;
 				next(new Error('Email already taken!'));
 			});
 		} else {
-			res.statusCode = 400;
-			next(new Error('Passwords do not match'));
+			next(new Error('Passwords do not match!'));
 		}
 	}
 }
