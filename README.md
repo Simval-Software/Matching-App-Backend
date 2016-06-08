@@ -28,12 +28,15 @@ Form Content Type - application/x-www-form-urlencoded
 * Login - /api/login
 
 request body
+```json
 {
     email,
     password
 }
+```
 
 response body
+```json
 {
     gender: String,
     dateOfBirth: Number,
@@ -49,17 +52,21 @@ response body
     "email": "valeri23@abv.bg",
     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NzU3ZDliNTcyZmYxOWY4MzM1OTRlM2MiLCJpYXQiOjE0NjUzNzUxNTgsImV4cCI6MTQ2NTQ2MTU1OH0.0iRiURI9V8oRgVl6Ao1XEC0VrkpFkHy02nFic6jwJ90"
 }
+```
 
 * Register - /api/register
 
 requrest body
+```json
 {
     email,
     password,
     confirmPass
 }
+```
 
 response body
+```json
 {
     gender: String,
     dateOfBirth: Number,
@@ -75,3 +82,4 @@ response body
     "email": "valeri23@abv.bg",
     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NzU3ZDliNTcyZmYxOWY4MzM1OTRlM2MiLCJpYXQiOjE0NjUzNzUxNTgsImV4cCI6MTQ2NTQ2MTU1OH0.0iRiURI9V8oRgVl6Ao1XEC0VrkpFkHy02nFic6jwJ90"
 }
+```
