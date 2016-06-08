@@ -1,8 +1,9 @@
 'use strict';
 
 let mongoose = require('mongoose'),
-Crypto = require('crypto'),
-Schema = mongoose.Schema;
+    when = require('when'),
+    Crypto = require('crypto'),
+    Schema = mongoose.Schema;
 
 let UserSchema = new Schema({
     email: {
@@ -17,7 +18,7 @@ let UserSchema = new Schema({
         type: String,
         default: generateSalt
     },
-    passwordHash: {
+    password: {
         type: String
     },
     gender: String,
@@ -61,9 +62,23 @@ let UserSchema = new Schema({
     lastLoggedIn: Number
 });
 
-let User = mongoose.model('User', UserSchema);
+UserSchema.pre('save', function (next) {
+    let user = this._doc;
+    let {salt, password} = user;
+    // TODO: Da probvame da go napravim asinhronno za da tap into the power of NODE
+    pbkdfEncryptPassword(password, salt).then((hash) => {
+        user.password = hash;
+        next();
+    });
+});
 
-module.exports = User;
+UserSchema.methods.verifyPassword = function (password, salt, hash) {
+    return when.promise((resolve, reject) => {
+        pbkdfEncryptPassword(password, salt).then((key) => {
+            resolve(key === hash);
+        });
+    });
+};
 
 function toLower(text) {
     return text.toLowerCase();
@@ -73,27 +88,18 @@ function generateSalt() {
     return Crypto.randomBytes(256).toString("hex");
 }
 
-UserSchema.pre('save', function (next) {
-    let user = this._doc;
-    let {salt, password} = user;
+function pbkdfEncryptPassword(password, salt) {
+    let deffered = when.defer();
 
-    const key = Crypto.pbkdf2Sync(password, salt, 100000, 512, 'sha512');
-    let hash = key.toString('hex');
+    Crypto.pbkdf2(password, salt, 100000, 512, 'sha512', (err, key) => {
+        if (err) deffered.reject(err);
 
-    user.password = hash;
-    next();
-});
+        deffered.resolve(key.toString('hex'));
+    });
 
-UserSchema.methods.verifyPassword = function (password, hash) {
-  // extract the salt and hash from the combined buffer
-  var saltBytes = hash.readUInt32BE(0);
-  var hashBytes = hash.length - saltBytes - 8;
-  var iterations = hash.readUInt32BE(4);
-  var salt = hash.slice(8, saltBytes + 8);
-  var hash = hash.toString('binary', saltBytes + 8);
-
-  // verify the salt and hash against the password
-  let verify = Crypto.pbkdf2Sync(password, salt, iterations, hashBytes);
-
-  return verify.toString('binary') === hash;
+    return deffered.promise;
 }
+
+let User = mongoose.model('User', UserSchema);
+
+module.exports = User;
