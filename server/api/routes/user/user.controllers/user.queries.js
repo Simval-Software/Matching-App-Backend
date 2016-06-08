@@ -34,5 +34,8 @@ module.exports = {
         }
 
         return deffered.promise;
+    },
+    getShortUserById(id) {
+        return User.findById(id, 'firstName lastName profileImage gender zodiac country city _id').exec();
     }
 };

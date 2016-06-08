@@ -89,17 +89,21 @@ let UserSchema = new Schema({
         originalName: String
     }],
     profileImage: Number,
-    lastLoggedIn: Number
+    lastLoggedIn: Number,
+    profileCreatedOn: Number,
+    profileEditedOn: Number
 });
 
 UserSchema.pre('save', function (next) {
     let user = this._doc;
     let {salt, password} = user;
-    // TODO: Da probvame da go napravim asinhronno za da tap into the power of NODE
+
     pbkdfEncryptPassword(password, salt).then((hash) => {
         user.password = hash;
         next();
     });
+
+    user.profileCreatedOn = Date.now();
 });
 
 UserSchema.methods.verifyPassword = function (password, salt, hash) {
