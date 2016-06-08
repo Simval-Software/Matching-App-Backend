@@ -1,5 +1,7 @@
-let user = require('./user.queries');
+let userQueries = require('./user.queries'),
+    profileHandlers = require('./user.profile');
 
 module.exports = {
-    user
+    queries: userQueries,
+    profileHandlers
 };

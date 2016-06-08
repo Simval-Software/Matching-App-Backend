@@ -5,6 +5,6 @@ let userRouter = require('express').Router(),
     tokenAuth = require('../auth/auth');
 
 userRouter.use(tokenAuth.decodeToken());
-// userRouter.get('/', userCtrl.getAllUsers);
+userRouter.get('/me', userCtrl.profileHandlers.getMyProfile);
 
 module.exports = userRouter;

@@ -1,6 +1,7 @@
 # Matching-App-Backend
 
-var user = {
+```json
+{
     _id,
     email,
     firstName,
@@ -21,6 +22,7 @@ var user = {
     passwordHash,
     lastLoggedIn
 }
+```
 
 # API #
 Form Content Type - application/x-www-form-urlencoded
@@ -61,7 +63,10 @@ requrest body
 {
     email,
     password,
-    confirmPass
+    confirmPass,
+    firstName,
+    lastName,
+    gender
 }
 ```
 

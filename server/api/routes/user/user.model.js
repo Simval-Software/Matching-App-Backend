@@ -8,12 +8,24 @@ let mongoose = require('mongoose'),
 let UserSchema = new Schema({
     email: {
         type: String,
-        required: true,
+        required: [true, 'Email field is required!'],
         index: { unique: true },
-        set: toLower
+        set: toLower,
+        validate: {
+            validator: (val) => {
+                return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(val);
+            },
+            message: '{VALUE} is not a valid email!'
+        }
     },
-    firstName: String,
-    lastName: String,
+    firstName: {
+        type: String,
+        required: [true, 'First name is required!']
+    },
+    lastName: {
+        type: String,
+        required: [true, 'Last name is required!']
+    },
     salt: {
         type: String,
         default: generateSalt
@@ -21,11 +33,29 @@ let UserSchema = new Schema({
     password: {
         type: String
     },
-    gender: String,
-    dateOfBirth: Number,
+    gender: {
+        type: String,
+        required: [true, 'Gender is required!'],
+        validate: {
+            validator: (val) => {
+                return val === 'M' || val === 'F';
+            },
+            message: '{VALUE} is not a valid gender!'
+        }
+    },
+    dateOfBirth: {
+        type: Number,
+        required: [true, 'Date of birth is required!']
+    },
     zodiac: Number,
-    country: String,
-    city: String,
+    country: {
+        type: String,
+        required: [true, 'Country is a required field!']
+    },
+    city: {
+        type: String,
+        required: [true, 'City is a required field!']
+    },
     popularity: {
         type: Number,
         default: 0
