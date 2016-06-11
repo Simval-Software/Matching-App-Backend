@@ -18,7 +18,7 @@ module.exports = {
             let { firstName, lastName, gender, city, country, dateOfBirth } = req.body;
 
             User.update({_id: req.user._id}, {
-                firstName, lastName, gender, city, country, dateOfBirth
+                firstName, lastName, gender, city, country, dateOfBirth: dateOfBirth || 0
             }).exec().then((data) => {
                 res.send(data);
             }).catch((err) => {
