@@ -45,7 +45,11 @@ let UserSchema = new Schema({
     },
     dateOfBirth: {
         type: Number,
-        required: [true, 'Date of birth is required!']
+        required: [true, 'Date of birth is required!'],
+        validate: {
+            validator: validateDate,
+            message: '{VALUE} is not a valid date!'
+        }
     },
     zodiac: Number,
     country: {
@@ -106,6 +110,11 @@ UserSchema.pre('save', function (next) {
     user.profileCreatedOn = Date.now();
 });
 
+UserSchema.pre('update', function (next) {
+  this.options.runValidators = true;
+  next();
+});
+
 UserSchema.methods.verifyPassword = function (password, salt, hash) {
     return when.promise((resolve, reject) => {
         pbkdfEncryptPassword(password, salt).then((key) => {
@@ -113,6 +122,10 @@ UserSchema.methods.verifyPassword = function (password, salt, hash) {
         });
     });
 };
+
+function validateDate(timestamp) {
+    return timestamp && (new Date(timestamp)).getTime() > 1;
+}
 
 function toLower(text) {
     return text.toLowerCase();

@@ -5,21 +5,16 @@ let authMware = require('./auth'),
 
 module.exports = {
 	login(req, res, next) {
-		let {email, password} = req.body,
-			invalidPasswordMsg = 'Invalid username or password';
+		let {email, password} = req.body;
 
-        if (email && password) {
-			userQueries.verifyUser(email, password).then((user) => {
-				if (user) {
-					req.user = user._doc;
-					next();
-				} else {
-					next(new Error(invalidPasswordMsg));
-				}
-			});
-        } else {
-			next(new Error(invalidPasswordMsg));
-        }
+		userQueries.verifyUser(email, password).then((user) => {
+			if (user) {
+				req.user = user._doc;
+				next();
+			} else {
+				next(new Error('Invalid username or password'));
+			}
+		});
 	},
 	register(req, res, next) {
 		let { email, password, confirmPass, firstName, lastName, gender, city, country, dateOfBirth } = req.body;

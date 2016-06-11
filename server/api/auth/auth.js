@@ -2,7 +2,7 @@
 
 let jwt = require('jsonwebtoken'),
     expressJwt = require('express-jwt'),
-    config = require('../../../config/config'),
+    config = require('../../config/config'),
     checkToken = expressJwt({ secret: config.secrets.jwt });
 
 exports.decodeToken = () => {

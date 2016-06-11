@@ -6,13 +6,13 @@ module.exports = {
 
 function start() {
     let app = require('express')(),
-        routes = require('./api/routes/'),
+        api = require('./api/'),
         config = require('./config/config'),
         port = config.port
 
     require('./db/connection')(config.db.url);
     require('./middleware/app.middleware')(app);
-    app.use('/api/', routes);
+    app.use('/api/', api);
 
     app.use((err, req, res, next) => {
         if (err) {
