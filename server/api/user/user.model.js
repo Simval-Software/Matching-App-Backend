@@ -111,8 +111,8 @@ UserSchema.pre('save', function (next) {
 });
 
 UserSchema.pre('update', function (next) {
-    this.options.runValidators = true;
-    next();
+  this.options.runValidators = true;
+  next();
 });
 
 UserSchema.methods.verifyPassword = function (password, salt, hash) {
@@ -132,15 +132,7 @@ function toLower(text) {
 }
 
 function generateSalt() {
-    let deffered = when.defer();
-
-    crypto.randomBytes(256, (err, buf) => {
-        if (err) deffered.reject(err);
-
-        deffered.resolve(buf.toString('hex'));
-    });
-
-    return deffered.promise;
+    return crypto.randomBytes(256).toString("hex");
 }
 
 function pbkdfEncryptPassword(password, salt) {
