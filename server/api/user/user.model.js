@@ -2,7 +2,7 @@
 
 let mongoose = require('mongoose'),
     when = require('when'),
-    Crypto = require('crypto'),
+    crypto = require('crypto'),
     Schema = mongoose.Schema;
 
 let UserSchema = new Schema({
@@ -111,8 +111,8 @@ UserSchema.pre('save', function (next) {
 });
 
 UserSchema.pre('update', function (next) {
-  this.options.runValidators = true;
-  next();
+    this.options.runValidators = true;
+    next();
 });
 
 UserSchema.methods.verifyPassword = function (password, salt, hash) {
@@ -132,13 +132,21 @@ function toLower(text) {
 }
 
 function generateSalt() {
-    return Crypto.randomBytes(256).toString("hex");
+    let deffered = when.defer();
+
+    crypto.randomBytes(256, (err, buf) => {
+        if (err) deffered.reject(err);
+
+        deffered.resolve(buf.toString('hex'));
+    });
+
+    return deffered.promise;
 }
 
 function pbkdfEncryptPassword(password, salt) {
     let deffered = when.defer();
 
-    Crypto.pbkdf2(password, salt, 100000, 512, 'sha512', (err, key) => {
+    crypto.pbkdf2(password, salt, 100000, 512, 'sha512', (err, key) => {
         if (err) deffered.reject(err);
 
         deffered.resolve(key.toString('hex'));
