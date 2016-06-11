@@ -1,9 +1,8 @@
 'use strict';
 
-let router = require('express').Router();
+let apiRouter = require('express').Router();
 
-router.use('/users', require('./user'));
-router.use('/', require('./auth/routes'));
+apiRouter.use('/', require('./auth'));
+apiRouter.use('/users', require('./user'));
 
-module.exports = router;
-
+module.exports = apiRouter;
