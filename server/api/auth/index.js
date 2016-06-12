@@ -1,7 +1,7 @@
 'use strict';
 let authRouter = require('express').Router(),
     controller = require('./controller'),
-    auth = require('./auth');
+    auth = require('./token');
 
 // before we send back a jwt, lets check
 // the password and username match what is in the DB

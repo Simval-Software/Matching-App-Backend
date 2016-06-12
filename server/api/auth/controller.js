@@ -1,6 +1,6 @@
 'use strict';
 
-let authMware = require('./auth'),
+let authMware = require('./token'),
 	userQueries = require('./../user/user.controllers/').queries;
 
 module.exports = {
