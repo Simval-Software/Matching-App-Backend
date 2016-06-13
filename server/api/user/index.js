@@ -10,6 +10,7 @@ userRouter.route('/me')
     .put(userCtrl.profileCtrl.editMyProfile);
 
 userRouter.route('/me/matches')
-    .put(userCtrl.matchesCtrl.likeUser);
+    .put(userCtrl.matchesCtrl.likeUser)
+    .get(userCtrl.matchesCtrl.getMyMatches);
 
 module.exports = userRouter;

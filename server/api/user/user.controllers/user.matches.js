@@ -1,8 +1,9 @@
 let User = require('./../user.model'),
+    userQueries = require('./user.queries'),
     when = require('when');
 
 module.exports = {
-    likeUser: (req, res) => {
+    likeUser: (req, res, next) => {
         if (req.user && req.user._id && req.body && req.body.userId) {
             let { userId } = req.body;
             let { _id } = req.user;
@@ -10,17 +11,9 @@ module.exports = {
             when.all([User.findById(userId).exec(), User.findById(_id).exec()])
                 .then((data) => {
                     let [likedUser, me] = data;
-                    
+
                     if (likedUser && me) {
-                        return when.all([insertLikedByUsers(_id, userId), insertLikedUsers(_id, userId)]);
-
-                        function insertLikedByUsers(myId, likedUser) {
-                            return User.findOneAndUpdate({_id: likedUser}, {$push: {'likedByUsers': myId}}, {safe: true, new: true, upsert: true}).exec();
-                        }
-
-                        function insertLikedUsers(myId, likedUser) {
-                            return User.findOneAndUpdate({_id: myId}, {$push: {'likedUsers': likedUser}}, {safe: true, new: true, upsert: true}).exec();
-                        }
+                        return when.all([addIdInCollection(userId, _id, 'likedUsers'), addIdInCollection(_id, userId, 'likedByUsers')]);
                     } else {
                         throw new Error('Invalid user ID');
                     }
@@ -36,15 +29,20 @@ module.exports = {
                         let doILikeHer = me.likedUsers.some((id) => { return id.equals(userId); });
 
                         if (doesSheLikesMe && doILikeHer) {
-                            res.json({
-                                match: true,
-                                user: {
-                                    _id: likedUser._id,
-                                    firstName: likedUser.firstName,
-                                    lastName: likedUser.lastName,
-                                    profileImage: likedUser.profileImage
-                                }
-                            });
+                            return when.all([addIdInCollection(userId, _id, 'matches'), addIdInCollection(_id, userId, 'matches')])
+                                .then((data) => {
+                                    let [likedUser, me] = data;
+
+                                    res.json({
+                                        match: true,
+                                        user: {
+                                            _id: likedUser._id,
+                                            firstName: likedUser.firstName,
+                                            lastName: likedUser.lastName,
+                                            profileImage: likedUser.profileImage
+                                        }
+                                    });
+                                });
                         } else {
                             res.json({ match: false });
                         }
@@ -53,6 +51,33 @@ module.exports = {
                 .catch((err) => {
                     next(new Error(err));
                 });
+        }
+
+        function addIdInCollection(myId, herId, collectionName) {
+            let pusherObj = {};
+            pusherObj[collectionName] = herId;
+
+            return User.findOneAndUpdate({ _id: myId }, { $addToSet: pusherObj }, { safe: true, new: true, upsert: true }).exec();
+        }
+    },
+    getMyMatches(req, res, next) {
+        if (req.user && req.user._id) {
+            User.findById(req.user._id, 'matches').exec().then((data) => {
+                let promises = [],
+                    { matches } = data;
+
+                for (let i = 0; i < matches.length; i++) {
+                    promises.push(userQueries.getShortUserById(matches[i]));
+                }
+
+                return when.all(promises);
+            })
+            .then((data) => {
+                res.json({
+                    matches: data
+                });
+            })
+            .catch((err) => {next(new Error(err))});
         }
     }
 }
