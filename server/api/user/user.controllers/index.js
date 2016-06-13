@@ -1,7 +1,9 @@
 let userQueries = require('./user.queries'),
-    profileHandlers = require('./user.profile');
+    profileCtrl = require('./user.profile'),
+    matchesCtrl = require('./user.matches');
 
 module.exports = {
     queries: userQueries,
-    profileHandlers
+    profileCtrl,
+    matchesCtrl
 };

@@ -2,11 +2,14 @@
 
 let userRouter = require('express').Router(),
     userCtrl = require('./user.controllers'),
-    tokenAuth = require('../auth/auth');
+    tokenAuth = require('../auth/token');
 
 userRouter.use(tokenAuth.decodeToken());
 userRouter.route('/me')
-    .get(userCtrl.profileHandlers.getMyProfile)
-    .put(userCtrl.profileHandlers.editMyProfile);
+    .get(userCtrl.profileCtrl.getMyProfile)
+    .put(userCtrl.profileCtrl.editMyProfile);
+
+userRouter.route('/me/matches')
+    .put(userCtrl.matchesCtrl.likeUser);
 
 module.exports = userRouter;

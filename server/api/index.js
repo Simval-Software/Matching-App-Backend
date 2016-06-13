@@ -2,7 +2,7 @@
 
 let apiRouter = require('express').Router();
 
-apiRouter.use('/', require('./auth'));
 apiRouter.use('/users', require('./user'));
+apiRouter.use('/', require('./auth'));
 
 module.exports = apiRouter;
