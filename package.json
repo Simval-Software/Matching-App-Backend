@@ -10,6 +10,7 @@
     "jsonwebtoken": "^5.0.4",
     "mongodb": "^2.1.21",
     "mongoose": "^4.4.19",
+    "mongoose-simple-random": "^0.3.3",
     "when": "^3.7.7"
   }
 }

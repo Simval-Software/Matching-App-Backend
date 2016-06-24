@@ -52,13 +52,6 @@ module.exports = {
                     next(new Error(err));
                 });
         }
-
-        function addIdInCollection(myId, herId, collectionName) {
-            let pusherObj = {};
-            pusherObj[collectionName] = herId;
-
-            return User.findOneAndUpdate({ _id: myId }, { $addToSet: pusherObj }, { safe: true, new: true, upsert: true }).exec();
-        }
     },
     getMyMatches(req, res, next) {
         if (req.user && req.user._id) {
@@ -72,12 +65,39 @@ module.exports = {
 
                 return when.all(promises);
             })
-            .then((data) => {
-                res.json({
-                    matches: data
-                });
-            })
-            .catch((err) => {next(new Error(err))});
+                .then((data) => {
+                    res.json({
+                        matches: data
+                    });
+                })
+                .catch((err) => { next(new Error(err)) });
+        }
+    },
+    dislikeUser(req, res, next) {
+        if (req.user && req.user._id && req.body && req.body.userId) {
+            let { userId } = req.body;
+            let { _id } = req.user;
+
+            when.all([removeIdFromCollection(_id, userId, 'likedUsers'), removeIdFromCollection(userId, _id, 'likedByUsers')])
+                .then((data) => {
+                    let [likedUser, me] = data;
+
+                    debugger;
+                })
         }
     }
+}
+
+function addIdInCollection(myId, herId, collectionName) {
+    let pusherObj = {};
+    pusherObj[collectionName] = herId;
+
+    return User.findOneAndUpdate({ _id: myId }, { $addToSet: pusherObj }, { safe: true, new: true, upsert: true }).exec();
+}
+
+function removeIdFromCollection(myId, herId, collectionName) {
+    let pusherObj = {};
+    pusherObj[collectionName] = herId;
+
+    return User.findOneAndUpdate({ _id: myId }, { $pull: pusherObj }, { new: true }).exec();
 }

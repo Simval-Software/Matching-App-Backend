@@ -3,6 +3,7 @@
 let mongoose = require('mongoose'),
     when = require('when'),
     crypto = require('crypto'),
+    random = require('mongoose-simple-random'),
     Schema = mongoose.Schema;
 
 let UserSchema = new Schema({
@@ -97,6 +98,8 @@ let UserSchema = new Schema({
     profileCreatedOn: Number,
     profileEditedOn: Number
 });
+
+UserSchema.plugin(random);
 
 UserSchema.pre('save', function (next) {
     let user = this._doc;
